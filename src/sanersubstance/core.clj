@@ -1,8 +1,6 @@
 (ns sanersubstance.core
   (:require [sanersubstance.wrappers]))
 
-(nightclub.wrappers/wrap-defaults!)
-
 (defn enforce-event-dispatch
   "This lets us work around the EDT-insanity that is instilled by the
   substance theme, and wraps the substance ui creation calls with an
