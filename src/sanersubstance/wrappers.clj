@@ -16,6 +16,8 @@
        (SwingUtilities/invokeAndWait invoker))
      @result)))
 
+(def ^:dynamic *debugging* nil)
+
 (defmacro invoke-now
   "Equivalent to SwingUtilities/invokeAndWait. Executes the given body immediately
   on the Swing UI thread, possibly blocking the current thread if it's not the Swing
@@ -51,7 +53,12 @@
           :constructors {[] []}
           :methods [~(with-meta  '[createUI [javax.swing.JComponent]
                                    javax.swing.plaf.ComponentUI]
-                      {:static true})]
+                       {:static true})
+                    ;[~'installUI [~'javax.swing.JComponent] ~'void]
+                    ;[~'uninstallUI [~'javax.swing.JComponent] ~'void]
+                    ]
+          :exposes-methods  ~{'installUI   'installUIParent
+                              'uninstallUI 'uninstallUIParent}
           :name ~classname
           )
     
@@ -60,8 +67,25 @@
     
     ;;override the static method...
     (~'defn ~'-createUI [~'c]
-      (~'sanersubstance.wrappers/invoke-now
-       (. ~subclass ~'createUI ~'c))))))
+     (when ~'sanersubstance.wrappers/*debugging*
+       (println "createUI"))
+     (~'sanersubstance.wrappers/invoke-now
+      (. ~subclass ~'createUI ~'c)))
+
+    ;;instance methods.
+    (~'defn ~'-installUI [~'o ~'c]
+          (when ~'sanersubstance.wrappers/*debugging*
+            (println "installUI"))
+     (~'sanersubstance.wrappers/invoke-now
+      (~'.installUIParent ~'o ~'c)))
+    
+    (~'defn ~'-uninstallUI [~'o ~'c]
+          (when ~'sanersubstance.wrappers/*debugging*
+            (println "uninstallUI"))
+     (~'sanersubstance.wrappers/invoke-now
+      (~'.uninstallUIParent ~'o ~'c)))
+
+    )))
 
 (def prefix "org.pushingpixels.substance.internal.ui.Substance")
 (defn new-prefix [_ x]

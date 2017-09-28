@@ -1,4 +1,6 @@
 (ns sanersubstance.wrappers.TableUI (:require [sanersubstance.wrappers]) (:import [org.pushingpixels.substance.internal.ui.SubstanceTableUI]))
-(gen-class :extends org.pushingpixels.substance.internal.ui.SubstanceTableUI :init init :constructors {[] []} :methods [^{:static true} [createUI [javax.swing.JComponent] javax.swing.plaf.ComponentUI]] :name sanersubstance.wrappers.TableUI)
+(gen-class :extends org.pushingpixels.substance.internal.ui.SubstanceTableUI :init init :constructors {[] []} :methods [^{:static true} [createUI [javax.swing.JComponent] javax.swing.plaf.ComponentUI]] :exposes-methods {installUI installUIParent, uninstallUI uninstallUIParent} :name sanersubstance.wrappers.TableUI)
 (defn -init [] [[] nil])
-(defn -createUI [c] (sanersubstance.wrappers/invoke-now (. org.pushingpixels.substance.internal.ui.SubstanceTableUI createUI c)))
+(defn -createUI [c] (clojure.core/when sanersubstance.wrappers/*debugging* (clojure.core/println "createUI")) (sanersubstance.wrappers/invoke-now (. org.pushingpixels.substance.internal.ui.SubstanceTableUI createUI c)))
+(defn -installUI [o c] (clojure.core/when sanersubstance.wrappers/*debugging* (clojure.core/println "installUI")) (sanersubstance.wrappers/invoke-now (.installUIParent o c)))
+(defn -uninstallUI [o c] (clojure.core/when sanersubstance.wrappers/*debugging* (clojure.core/println "uninstallUI")) (sanersubstance.wrappers/invoke-now (.uninstallUIParent o c)))
